@@ -362,6 +362,17 @@ public class QuizRemoteImpl extends UnicastRemoteObject implements QuizRemote {
         final Map<Integer, Map<String, String>> answersPerRound = new ConcurrentHashMap<>(); // round -> (playerId -> option)
         final Map<Integer, QuestionResultDTO> completedQuestionResults = new ConcurrentHashMap<>();
 
+        static class PlayerAnswerRecord {
+            String playerId;
+            int questionId;
+            int questionIndex;
+            String selectedOption;
+            boolean isCorrect;
+            int responseTimeMs;
+            int pointsAwarded;
+        }
+        final List<PlayerAnswerRecord> matchAnswerLog = Collections.synchronizedList(new ArrayList<>());
+
         volatile int secondsRemaining = 0;
         volatile long matchStartTimeMs = 0;
         ScheduledFuture<?> currentTimerTask = null;
@@ -577,6 +588,17 @@ public class QuizRemoteImpl extends UnicastRemoteObject implements QuizRemote {
             }
             p.setCumulativeResponseTimeMs(p.getCumulativeResponseTimeMs() + responseTimeMs);
             p.setScore(p.getScore() + scoring.getTotalPoints());
+
+            // Record answer for persistence in MySQL match_answers
+            PlayerAnswerRecord rec = new PlayerAnswerRecord();
+            rec.playerId = playerId;
+            rec.questionId = q.getId();
+            rec.questionIndex = qIndex;
+            rec.selectedOption = selectedOption.toUpperCase();
+            rec.isCorrect = scoring.isCorrect();
+            rec.responseTimeMs = (int) responseTimeMs;
+            rec.pointsAwarded = scoring.getTotalPoints();
+            matchAnswerLog.add(rec);
 
             System.out.printf("[DISTRIBUTED RPC] Room: %s | Fighter '%s' answered [%s] in %dms -> %s! (+%d pts, Streak: %d, Total: %d)%n",
                     roomCode, p.getNickname(), selectedOption, responseTimeMs,
@@ -857,7 +879,9 @@ public class QuizRemoteImpl extends UnicastRemoteObject implements QuizRemote {
                 stmt.setString(2, summary.getRoomCode());
                 stmt.setString(3, config.getGameMode().name());
                 stmt.setString(4, config.getDifficulty().name());
-                stmt.setInt(5, config.getCategoryId());
+                int catId = (config != null && config.getCategoryId() >= 1 && config.getCategoryId() <= 6)
+                        ? config.getCategoryId() : 1;
+                stmt.setInt(5, catId);
                 stmt.setString(6, players.containsKey(hostId) ? players.get(hostId).getNickname() : "Host");
                 stmt.setInt(7, players.size());
                 stmt.setString(8, summary.getWinnerNickname());
@@ -889,7 +913,29 @@ public class QuizRemoteImpl extends UnicastRemoteObject implements QuizRemote {
                         pStmt.executeBatch();
                     }
                 }
-                System.out.println("[QuizRemoteImpl] Match summary and player results persisted to MySQL.");
+
+                if (matchId > 0 && !matchAnswerLog.isEmpty()) {
+                    String insertAnsSql = "INSERT INTO match_answers (match_id, player_id, question_id, question_index, selected_option, is_correct, response_time_ms, points_awarded, answered_at) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                    try (PreparedStatement aStmt = conn.prepareStatement(insertAnsSql)) {
+                        for (PlayerAnswerRecord rec : matchAnswerLog) {
+                            if (rec.questionId <= 0) continue;
+                            aStmt.setLong(1, matchId);
+                            aStmt.setString(2, rec.playerId);
+                            aStmt.setInt(3, rec.questionId);
+                            aStmt.setInt(4, rec.questionIndex);
+                            aStmt.setString(5, rec.selectedOption);
+                            aStmt.setBoolean(6, rec.isCorrect);
+                            aStmt.setInt(7, rec.responseTimeMs);
+                            aStmt.setInt(8, rec.pointsAwarded);
+                            aStmt.addBatch();
+                        }
+                        aStmt.executeBatch();
+                    } catch (Exception ex) {
+                        System.err.println("[QuizRemoteImpl] Warning saving match answers: " + ex.getMessage());
+                    }
+                }
+                System.out.println("[QuizRemoteImpl] Match summary, players, and answers persisted to MySQL.");
             } catch (Exception e) {
                 System.err.println("[QuizRemoteImpl] Could not archive match to MySQL: " + e.getMessage());
             }

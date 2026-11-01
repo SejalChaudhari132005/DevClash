@@ -52,6 +52,8 @@ public class DatabaseConfig {
             try (Connection conn = dataSource.getConnection()) {
                 System.out.println("[DatabaseConfig] Successfully connected to MySQL at: " + jdbcUrl);
             }
+            // Automatically verify and seed database schema & question bank
+            DatabaseInitializer.verifyAndMigrate();
         } catch (Exception e) {
             System.err.println("[DatabaseConfig] Warning: MySQL connection failed (" + e.getMessage() + "). Question bank will use embedded fallback if needed.");
         }
