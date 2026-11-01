@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.devclash</groupId>
+        <artifactId>devclash-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>devclash-common</artifactId>
+    <name>DevClash Common</name>
+    <description>Shared RMI Interfaces, Serializable DTOs, and Enums</description>
+
+    <dependencies>
+        <!-- Pure standard Java library - no external runtime dependencies needed for standard RMI DTOs -->
+    </dependencies>
+</project>

@@ -1,0 +1,294 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --lavender: #C9BDF5;
+    --light-purple: #D9B8F4;
+    --deep-purple: #26005C;
+    --dark-navy: #160033;
+    --electric-violet: #A72CFF;
+    --hot-pink: #FF62C7;
+    --turquoise: #38E5D1;
+    --bright-yellow: #FFE45C;
+    --white: #F5EEFF;
+  }
+
+  body {
+    background-color: #160033;
+    color: #F5EEFF;
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    image-rendering: pixelated;
+  }
+}
+
+/* Typography Utility Classes */
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: -0.05em;
+}
+
+.font-arcade {
+  font-family: 'Silkscreen', monospace;
+  letter-spacing: 0.02em;
+}
+
+.font-terminal {
+  font-family: 'VT323', monospace;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+/* Pixel Borders and Card Containers */
+.pixel-border {
+  border: 3px solid #160033;
+  box-shadow: 4px 4px 0px #160033;
+}
+
+.pixel-border-sm {
+  border: 2px solid #160033;
+  box-shadow: 2px 2px 0px #160033;
+}
+
+.pixel-border-lg {
+  border: 4px solid #160033;
+  box-shadow: 6px 6px 0px #160033;
+}
+
+.pixel-card-lavender {
+  background-color: #C9BDF5;
+  color: #160033;
+  border: 3px solid #160033;
+  box-shadow: 4px 4px 0px #160033;
+}
+
+.pixel-card-purple {
+  background-color: #26005C;
+  color: #F5EEFF;
+  border: 3px solid #A72CFF;
+  box-shadow: 4px 4px 0px #160033;
+}
+
+.pixel-card-dark {
+  background-color: #160033;
+  color: #F5EEFF;
+  border: 3px solid #D9B8F4;
+  box-shadow: 4px 4px 0px #26005C;
+}
+
+.pixel-card-yellow {
+  background-color: #FFE45C;
+  color: #160033;
+  border: 3px solid #160033;
+  box-shadow: 4px 4px 0px #160033;
+}
+
+/* Arcade Interactive Buttons */
+.pixel-btn {
+  font-family: 'Silkscreen', monospace;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 3px solid #160033;
+  box-shadow: 4px 4px 0px #160033;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pixel-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #160033;
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #160033;
+}
+
+.pixel-btn-yellow {
+  background-color: #FFE45C;
+  color: #160033;
+}
+.pixel-btn-yellow:hover {
+  background-color: #FFF099;
+}
+
+.pixel-btn-cyan {
+  background-color: #38E5D1;
+  color: #160033;
+}
+.pixel-btn-cyan:hover {
+  background-color: #6CF2E2;
+}
+
+.pixel-btn-pink {
+  background-color: #FF62C7;
+  color: #160033;
+}
+.pixel-btn-pink:hover {
+  background-color: #FF85D6;
+}
+
+.pixel-btn-purple {
+  background-color: #D9B8F4;
+  color: #160033;
+}
+.pixel-btn-purple:hover {
+  background-color: #EBD4FC;
+}
+
+.pixel-btn-violet {
+  background-color: #A72CFF;
+  color: #F5EEFF;
+}
+.pixel-btn-violet:hover {
+  background-color: #BA54FF;
+}
+
+/* Pill Badges (from the reference image style) */
+.pixel-pill {
+  font-family: 'Silkscreen', monospace;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 2px solid #160033;
+  box-shadow: 2px 2px 0px #160033;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Stepped Pixel Corners */
+.pixel-stepped {
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
+}
+
+/* Checkered Pixel Cobblestone Pavement (from bottom of reference image) */
+.pixel-pavement {
+  background-color: #C9BDF5;
+  background-image: 
+    linear-gradient(45deg, #A72CFF 25%, transparent 25%), 
+    linear-gradient(-45deg, #A72CFF 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #A72CFF 75%), 
+    linear-gradient(-45deg, transparent 75%, #A72CFF 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  border-top: 4px solid #160033;
+  border-bottom: 4px solid #160033;
+}
+
+.pixel-pavement-dark {
+  background-color: #26005C;
+  background-image: 
+    linear-gradient(45deg, #160033 25%, transparent 25%), 
+    linear-gradient(-45deg, #160033 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #160033 75%), 
+    linear-gradient(-45deg, transparent 75%, #160033 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  border-top: 4px solid #A72CFF;
+}
+
+/* Pixel Decorative Border Strip */
+.pixel-strip {
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #FFE45C 0px, #FFE45C 8px,
+    #38E5D1 8px, #38E5D1 16px,
+    #FF62C7 16px, #FF62C7 24px,
+    #A72CFF 24px, #A72CFF 32px
+  );
+  border-top: 2px solid #160033;
+  border-bottom: 2px solid #160033;
+}
+
+/* Retro CRT Terminal Scanlines */
+.crt-scanlines {
+  position: relative;
+}
+.crt-scanlines::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Floating Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes cloudDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes coinPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #FFE45C); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 8px #FFE45C); }
+}
+
+@keyframes lightningFlash {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.6) drop-shadow(0 0 16px #38E5D1); }
+}
+
+.animate-float {
+  animation: floatSlow 3s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.animate-coin {
+  animation: coinPulse 1.5s ease-in-out infinite;
+}
+
+.animate-lightning {
+  animation: lightningFlash 0.5s ease-in-out infinite;
+}
+
+/* Custom Scrollbar - Retro Pixel Box Style */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #160033;
+  border: 2px solid #26005C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C9BDF5;
+  border: 2px solid #160033;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFE45C;
+}

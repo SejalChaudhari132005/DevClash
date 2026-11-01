@@ -1,0 +1,21 @@
+# ==============================================================================
+# DEVCLASH STANDALONE JAVA RMI QUIZ SERVER DOCKERFILE
+# ==============================================================================
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+RUN addgroup -S devclash && adduser -S devclash -G devclash
+
+# Copy packaged jar and dependencies
+COPY rmi-server/target/devclash-rmi-server-1.0.0-SNAPSHOT.jar app.jar
+# In case of dependency jars or fat jars, we also ensure classpath is ready
+COPY common/target/devclash-common-1.0.0-SNAPSHOT.jar common.jar
+
+RUN chown -R devclash:devclash /app
+
+USER devclash
+
+# Expose RMI Registry (1099) and Fixed Exported Remote Object Port (1098)
+EXPOSE 1099 1098
+
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-cp", "app.jar:common.jar", "com.devclash.rmiserver.RmiServerApplication"]

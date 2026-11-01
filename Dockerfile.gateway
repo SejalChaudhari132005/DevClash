@@ -1,0 +1,17 @@
+# ==============================================================================
+# DEVCLASH SPRING BOOT GATEWAY DOCKERFILE
+# ==============================================================================
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Add unprivileged runtime user
+RUN addgroup -S devclash && adduser -S devclash -G devclash
+
+COPY gateway/target/devclash-gateway-1.0.0-SNAPSHOT.jar app.jar
+RUN chown -R devclash:devclash /app
+
+USER devclash
+
+EXPOSE 8085 1097
+
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
